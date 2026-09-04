@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "title": "Jane Doe — Product Designer",
+    "description": "Selected work in product design and rapid prototyping.",
+    "canonicalUrl": "https://jane.design",
+    "ogImage": "https://placehold.co/1200x630/png"
+  },
+  "contact": {
+    "email": "hello@jane.design",
+    "label": "Get in touch"
+  },
+  "templateId": "minimal",
+  "items": [
+    {
+      "id": "item-1",
+      "title": "Fintech Dashboard",
+      "description": "Real-time analytics dashboard for a fintech client.",
+      "media": {
+        "kind": "video",
+        "src": "https://example.com/demo.mp4",
+        "poster": "https://placehold.co/1280x720/png"
+      },
+      "tags": ["design", "fintech", "react"]
+    }
+  ]
+}

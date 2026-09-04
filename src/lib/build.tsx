@@ -1,0 +1,27 @@
+import { renderToStaticMarkup } from "react-dom/server";
+import type { Config } from "./config";
+import { templates } from "./templates";
+import { SeoHead } from "./head";
+import { LAZY_MEDIA_SCRIPT } from "./lazy";
+import { normalizeHtml } from "./normalize";
+
+// Pure function: Config -> complete static HTML string.
+// Used by the UI (in-browser) and the CLI (Node) — same output both ways.
+export function build(config: Config): string {
+  const template = templates[config.templateId];
+
+  const html = renderToStaticMarkup(
+    <html lang="en">
+      <head>
+        <SeoHead meta={config.meta} />
+        <style>{template.css}</style>
+      </head>
+      <body>
+        {template.render({ meta: config.meta, items: config.items, contact: config.contact })}
+        <script>{LAZY_MEDIA_SCRIPT}</script>
+      </body>
+    </html>,
+  );
+
+  return normalizeHtml(`<!doctype html>${html}`);
+}
