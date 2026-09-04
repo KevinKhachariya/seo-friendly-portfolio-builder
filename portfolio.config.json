@@ -1,9 +1,13 @@
 {
   "meta": {
-    "title": "Jane Doe — Product Designer",
+    "title": "Jane Doe Product Designer",
     "description": "Selected work in product design and rapid prototyping.",
+    "lang": "en",
     "canonicalUrl": "https://jane.design",
-    "ogImage": "https://placehold.co/1200x630/png"
+    "ogImage": "https://placehold.co/1200x630/png",
+    "github": "https://github.com/jane",
+    "x": "https://x.com/jane",
+    "linkedin": "https://linkedin.com/in/jane"
   },
   "contact": {
     "email": "hello@jane.design",
@@ -20,7 +24,8 @@
         "src": "https://example.com/demo.mp4",
         "poster": "https://placehold.co/1280x720/png"
       },
-      "tags": ["design", "fintech", "react"]
+      "tags": ["design", "fintech", "react"],
+      "link": "https://example.com"
     }
   ]
 }

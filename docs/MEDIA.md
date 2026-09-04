@@ -2,7 +2,7 @@
 
 The builder **never downloads, processes, or re-hosts your media.** You produce it with
 whatever tools you like, host it anywhere, and paste an **HTTPS URL** into
-`portfolio.config.json`. The builder only embeds that URL and makes it load lazily.
+`portfolio.config.json` (or the UI). The builder only embeds that URL and makes it load lazily.
 
 ## What you provide (per demo item)
 
@@ -13,6 +13,12 @@ whatever tools you like, host it anywhere, and paste an **HTTPS URL** into
 | `alt` | optional | Text description for images (accessibility + SEO). |
 
 For a **static image** demo, provide `src` (the image URL) + optional `alt` instead of a video.
+
+## Audio — one rule you can't change
+
+Videos do **not autoplay** and start **muted**. The poster shows instantly; the visitor clicks
+**play** to watch (muted), and the **speaker icon** to hear audio if the demo has any. No flag,
+no config — it just works.
 
 ## The only thing the builder enforces: a safe URL
 
@@ -25,10 +31,10 @@ For a **static image** demo, provide `src` (the image URL) + optional `alt` inst
 ## How the builder makes it load instantly
 
 1. **Images** → `<img loading="lazy">` (browser-native, zero JS).
-2. **Video** → `<video preload="none" poster="…" muted loop autoplay playsinline>`.
-3. A **~10-line inline script** (IntersectionObserver) sets `src` only when the video is
-   about to enter the viewport — the video is never downloaded until it's actually seen.
-4. `fetchpriority="low"` on video so the page itself always loads first.
+2. **Videos** → `<video muted playsinline controls preload="none" data-src="…">` plus a
+   **~10-line inline script** (IntersectionObserver) that sets `src` only when the video is about
+   to enter the viewport. No autoplay; the poster paints instantly and the visitor clicks play
+   (starts muted — click the speaker icon to hear audio if the file has any).
 
 This is the **only JavaScript** in the entire output.
 
@@ -45,21 +51,27 @@ MP4 + WebM + poster, these are the common ones:
 | **Squoosh** | Browser, free | compressing the poster to WebP/AVIF |
 | **ezgif** | Browser, free | one-off GIF → MP4/WebP |
 
-Reference commands (MP4, WebM, poster) — `ffmpeg`:
+Reference commands — `ffmpeg`:
 
 ```bash
-# MP4 (universal decode)
+# MP4 — with audio (H.264 + AAC)
+ffmpeg -i input.mp4 -vf "fps=30,scale=1280:-2" -c:v libx264 -crf 23 -preset slow -c:a aac -b:a 128k -movflags +faststart -pix_fmt yuv420p demo.mp4
+
+# WebM — with audio (VP9 + Opus)
+ffmpeg -i input.mp4 -vf "fps=30,scale=1280:-2" -c:v libvpx-vp9 -crf 32 -b:v 0 -c:a libopus -b:a 96k demo.webm
+
+# MP4 — no audio (drop the -c:a flag, add -an)
 ffmpeg -i input.mp4 -vf "fps=30,scale=1280:-2" -an -c:v libx264 -crf 23 -preset slow -movflags +faststart -pix_fmt yuv420p demo.mp4
 
-# WebM (smaller, modern browsers)
-ffmpeg -i input.mp4 -vf "fps=30,scale=1280:-2" -an -c:v libvpx-vp9 -crf 32 -b:v 0 demo.webm
-
-# GIF -> MP4
+# GIF -> MP4 (GIFs have no audio)
 ffmpeg -i input.gif -vf "fps=30,scale=trunc(iw/2)*2:trunc(ih/2)*2" -an -c:v libx264 -crf 23 -pix_fmt yuv420p -movflags +faststart demo.mp4
 
 # Poster (first frame, then compress in Squoosh -> WebP)
 ffmpeg -i demo.mp4 -frames:v 1 -vf "scale=1280:-2" -q:v 4 poster.jpg
 ```
+
+> **OBS:** to capture audio, enable **Desktop Audio** (and/or **Mic**) in OBS before recording.
+> The commands above keep it — AAC for MP4, Opus for WebM.
 
 ## Optional: where to host
 

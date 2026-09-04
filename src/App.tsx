@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -24,20 +24,26 @@ type DraftItem = {
   description: string;
   media: DraftMedia;
   tags: string;
+  link: string;
 };
 type Draft = {
-  meta: { title: string; description: string; canonicalUrl: string; ogImage: string };
+  meta: { title: string; description: string; canonicalUrl: string; ogImage: string; lang: string; favicon: string; github: string; x: string; linkedin: string };
   contact: { email: string; label: string };
-  templateId: "minimal" | "editorial";
+  templateId: "minimal" | "editorial" | "cartoony";
   items: DraftItem[];
 };
 
 const sample: Draft = {
   meta: {
-    title: "Jane Doe — Product Designer",
+    title: "Jane Doe Product Designer",
     description: "Selected work in product design and rapid prototyping.",
     canonicalUrl: "https://jane.design",
     ogImage: "https://placehold.co/1200x630/png",
+    lang: "en",
+    favicon: "",
+    github: "",
+    x: "",
+    linkedin: "",
   },
   contact: { email: "hello@jane.design", label: "Get in touch" },
   templateId: "minimal",
@@ -52,6 +58,7 @@ const sample: Draft = {
         poster: "https://placehold.co/1280x720/png",
       },
       tags: "design, fintech, react",
+      link: "",
     },
   ],
 };
@@ -61,8 +68,13 @@ function toConfig(d: Draft): { ok: true; config: Config } | { ok: false; error: 
     meta: {
       title: d.meta.title,
       description: d.meta.description,
+      lang: d.meta.lang || "en",
       ...(d.meta.canonicalUrl ? { canonicalUrl: d.meta.canonicalUrl } : {}),
       ...(d.meta.ogImage ? { ogImage: d.meta.ogImage } : {}),
+      ...(d.meta.favicon ? { favicon: d.meta.favicon } : {}),
+      ...(d.meta.github ? { github: d.meta.github } : {}),
+      ...(d.meta.x ? { x: d.meta.x } : {}),
+      ...(d.meta.linkedin ? { linkedin: d.meta.linkedin } : {}),
     },
     contact: { email: d.contact.email, label: d.contact.label || "Contact" },
     templateId: d.templateId,
@@ -72,6 +84,7 @@ function toConfig(d: Draft): { ok: true; config: Config } | { ok: false; error: 
       description: it.description,
       media: it.media,
       tags: it.tags.split(",").map((s) => s.trim()).filter(Boolean),
+      ...(it.link ? { link: it.link } : {}),
     })),
   };
   const parsed = configSchema.safeParse(raw);
@@ -93,6 +106,11 @@ function configToDraft(c: Config): Draft {
       description: c.meta.description,
       canonicalUrl: c.meta.canonicalUrl ?? "",
       ogImage: c.meta.ogImage ?? "",
+      lang: c.meta.lang,
+      favicon: c.meta.favicon ?? "",
+      github: c.meta.github ?? "",
+      x: c.meta.x ?? "",
+      linkedin: c.meta.linkedin ?? "",
     },
     contact: { email: c.contact.email, label: c.contact.label },
     templateId: c.templateId,
@@ -105,6 +123,7 @@ function configToDraft(c: Config): Draft {
           ? { kind: "video", src: it.media.src, poster: it.media.poster }
           : { kind: "image", src: it.media.src, alt: it.media.alt ?? "" },
       tags: it.tags.join(", "),
+      link: it.link ?? "",
     })),
   };
 }
@@ -133,6 +152,7 @@ export default function App() {
           description: "",
           media: { kind: "video", src: "", poster: "" },
           tags: "",
+          link: "",
         },
       ],
     }));
@@ -210,6 +230,29 @@ export default function App() {
         <div className="space-y-6">
           <Card>
             <CardHeader>
+              <CardTitle>Template</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Select
+                value={draft.templateId}
+                onValueChange={(v) =>
+                  setDraft((d) => ({ ...d, templateId: v as Draft["templateId"] }))
+                }
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="minimal">Minimal</SelectItem>
+                  <SelectItem value="editorial">Editorial</SelectItem>
+                  <SelectItem value="cartoony">Cartoony</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
               <CardTitle>SEO</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -219,7 +262,7 @@ export default function App() {
                   id="meta-title"
                   value={draft.meta.title}
                   onChange={(e) => setMeta("title", e.target.value)}
-                  placeholder="Jane Doe — Product Designer"
+                  placeholder="Jane Doe Product Designer"
                 />
               </div>
               <div className="space-y-1.5">
@@ -248,6 +291,55 @@ export default function App() {
                     value={draft.meta.ogImage}
                     onChange={(e) => setMeta("ogImage", e.target.value)}
                     placeholder="https://…"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <Label htmlFor="meta-lang">Language</Label>
+                  <Input
+                    id="meta-lang"
+                    value={draft.meta.lang}
+                    onChange={(e) => setMeta("lang", e.target.value)}
+                    placeholder="en"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="meta-favicon">Favicon URL (optional)</Label>
+                  <Input
+                    id="meta-favicon"
+                    value={draft.meta.favicon}
+                    onChange={(e) => setMeta("favicon", e.target.value)}
+                    placeholder="https://…/favicon.ico"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="space-y-1.5">
+                  <Label htmlFor="meta-github">GitHub URL (optional)</Label>
+                  <Input
+                    id="meta-github"
+                    value={draft.meta.github}
+                    onChange={(e) => setMeta("github", e.target.value)}
+                    placeholder="https://github.com/…"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="meta-x">X URL (optional)</Label>
+                  <Input
+                    id="meta-x"
+                    value={draft.meta.x}
+                    onChange={(e) => setMeta("x", e.target.value)}
+                    placeholder="https://x.com/…"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="meta-linkedin">LinkedIn URL (optional)</Label>
+                  <Input
+                    id="meta-linkedin"
+                    value={draft.meta.linkedin}
+                    onChange={(e) => setMeta("linkedin", e.target.value)}
+                    placeholder="https://linkedin.com/in/…"
                   />
                 </div>
               </div>
@@ -280,28 +372,6 @@ export default function App() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Template</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Select
-                value={draft.templateId}
-                onValueChange={(v) =>
-                  setDraft((d) => ({ ...d, templateId: v as Draft["templateId"] }))
-                }
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="minimal">Minimal</SelectItem>
-                  <SelectItem value="editorial">Editorial</SelectItem>
-                </SelectContent>
-              </Select>
-            </CardContent>
-          </Card>
-
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold">Portfolio items ({draft.items.length})</h2>
             <Button variant="outline" size="sm" onClick={addItem}>
@@ -311,16 +381,18 @@ export default function App() {
 
           {draft.items.map((item) => (
             <Card key={item.id}>
-              <CardHeader className="flex-row items-center justify-between space-y-0">
+              <CardHeader>
                 <CardTitle className="text-sm">Item</CardTitle>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => removeItem(item.id)}
-                  aria-label="Remove item"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                <CardAction>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeItem(item.id)}
+                    aria-label="Delete item"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </CardAction>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -350,6 +422,14 @@ export default function App() {
                   />
                 </div>
                 <div className="space-y-1.5">
+                  <Label>Project link (optional)</Label>
+                  <Input
+                    value={item.link}
+                    onChange={(e) => patchItem(item.id, { link: e.target.value })}
+                    placeholder="https://…/live-demo"
+                  />
+                </div>
+                <div className="space-y-1.5">
                   <Label>Media type</Label>
                   <Select
                     value={item.media.kind}
@@ -376,10 +456,11 @@ export default function App() {
                     value={item.media.src}
                     onChange={(e) =>
                       patchItem(item.id, {
-  media: item.media.kind === "video"
-    ? { kind: "video", src: e.target.value, poster: item.media.poster }
-    : { kind: "image", src: e.target.value, alt: item.media.alt ?? "" },
-})
+                        media:
+                          item.media.kind === "video"
+                            ? { kind: "video", src: e.target.value, poster: item.media.poster }
+                            : { kind: "image", src: e.target.value, alt: item.media.alt ?? "" },
+                      })
                     }
                     placeholder="https://…/demo.mp4"
                   />

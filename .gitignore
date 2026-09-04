@@ -6,3 +6,5 @@ dist-ui/
 *.log
 .DS_Store
 Thumbs.db
+sample-test-urls.md
+obs-ffmpeg-guide.md
