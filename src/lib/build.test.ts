@@ -116,4 +116,18 @@ describe("config schema", () => {
     };
     expect(configSchema.safeParse(noAlt).success).toBe(false);
   });
+
+  it("accepts a locally embedded .ico favicon (data URL)", () => {
+    const withIcon = {
+      ...config,
+      meta: { ...config.meta, favicon: "data:image/x-icon;base64,AAABAAEAAAAAAAEAAAABAAgAgAIAAA==" },
+    };
+    const parsed = configSchema.safeParse(withIcon);
+    expect(parsed.success).toBe(true);
+    if (parsed.success) {
+      const html = build(parsed.data);
+      expect(html).toContain('rel="icon"');
+      expect(html).toContain("data:image/x-icon;base64");
+    }
+  });
 });

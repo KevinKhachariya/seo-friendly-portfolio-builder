@@ -20,9 +20,8 @@ const minimal: Template = {
   id: "minimal",
   name: "Minimal",
   css: `
-    :root { color-scheme: light; }
     * { box-sizing: border-box; margin: 0; }
-    body { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; background: #fff; color: #171717; line-height: 1.6; }
+    .pf-page { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; background: #fff; color: #171717; line-height: 1.6; min-height: 100%; }
     main { max-width: 1120px; margin: 0 auto; padding: 3rem 1.5rem; }
     header { margin-bottom: 3rem; }
     h1 { font-size: 2.25rem; letter-spacing: -0.03em; margin: 0 0 .5rem; }
@@ -70,9 +69,8 @@ const editorial: Template = {
   id: "editorial",
   name: "Editorial",
   css: `
-    :root { color-scheme: light; }
     * { box-sizing: border-box; margin: 0; }
-    body { font-family: Georgia, "Times New Roman", serif; background: #faf7f2; color: #1c1917; line-height: 1.7; }
+    .pf-page { font-family: Georgia, "Times New Roman", serif; background: #faf7f2; color: #1c1917; line-height: 1.7; min-height: 100%; }
     main { max-width: 960px; margin: 0 auto; padding: 4rem 2rem; }
     header { margin-bottom: 4rem; border-bottom: 1px solid #d6d3d1; padding-bottom: 2rem; }
     h1 { font-size: 3rem; font-weight: 400; letter-spacing: -0.02em; margin: 0 0 .75rem; }
@@ -120,15 +118,15 @@ const cartoony: Template = {
   id: "cartoony",
   name: "Cartoony",
   css: `
-    :root { color-scheme: light; }
     * { box-sizing: border-box; margin: 0; }
-    body {
+    .pf-page {
       font-family: "Trebuchet MS", "Segoe UI", sans-serif;
       background: #f7f3e8;
       background-image: radial-gradient(#0000001a 1px, transparent 1px);
       background-size: 12px 12px;
       color: #151515;
       line-height: 1.5;
+      min-height: 100%;
     }
     main { max-width: 1120px; margin: 0 auto; padding: 3rem 1.5rem; }
     header { margin-bottom: 2.5rem; }

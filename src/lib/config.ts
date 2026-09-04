@@ -12,6 +12,18 @@ export const httpsUrl = z
     }
   }, "Must be a clean https:// URL");
 
+// Favicon is best kept local: accept a hosted https URL OR an inline data:image
+// URL (the icon picker produces data URLs for .ico/.png/.svg).
+const faviconUrl = z.string().refine((u) => {
+  try {
+    const p = new URL(u);
+    if (p.protocol === "https:") return !p.username && !p.password;
+    return p.protocol === "data:" && p.pathname.startsWith("image/");
+  } catch {
+    return false;
+  }
+}, "Favicon must be an https:// URL or a data:image URL");
+
 export const mediaSchema = z.discriminatedUnion("kind", [
   z.object({
     kind: z.literal("video"),
@@ -41,7 +53,7 @@ export const configSchema = z.object({
     lang: z.string().default("en"),
     canonicalUrl: httpsUrl.optional(),
     ogImage: httpsUrl.optional(),
-    favicon: httpsUrl.optional(),
+    favicon: faviconUrl.optional(),
     github: httpsUrl.optional(),
     x: httpsUrl.optional(),
     linkedin: httpsUrl.optional(),

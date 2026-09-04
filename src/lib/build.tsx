@@ -17,7 +17,7 @@ export function build(config: Config): string {
         <SeoHead config={config} />
         <style>{template.css}</style>
       </head>
-      <body>
+      <body className="pf-page">
         {template.render({ meta: config.meta, items: config.items, contact: config.contact })}
         <script>{LAZY_MEDIA_SCRIPT}</script>
         <script>{FILTER_SCRIPT}</script>

@@ -14,6 +14,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { build } from "@/lib/build";
 import { configSchema, type Config } from "@/lib/config";
+import { LivePreview } from "./LivePreview";
 
 type DraftVideo = { kind: "video"; src: string; poster: string };
 type DraftImage = { kind: "image"; src: string; alt: string };
@@ -131,9 +132,9 @@ function configToDraft(c: Config): Draft {
 export default function App() {
   const [draft, setDraft] = useState<Draft>(sample);
   const fileRef = useRef<HTMLInputElement>(null);
+  const iconRef = useRef<HTMLInputElement>(null);
 
   const result = useMemo(() => toConfig(draft), [draft]);
-  const html = result.ok ? build(result.config) : null;
   const error = result.ok ? null : result.error;
 
   const setMeta = <K extends keyof Draft["meta"]>(k: K, v: Draft["meta"][K]) =>
@@ -193,6 +194,16 @@ export default function App() {
     });
   };
 
+  const uploadIcon = (file: File) => {
+    if (file.size > 1_000_000) {
+      alert("Favicon too large — keep it under 1 MB.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => setMeta("favicon", String(reader.result));
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div className="min-h-screen bg-muted/40">
       <header className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b bg-background px-6 py-3">
@@ -217,8 +228,10 @@ export default function App() {
           </Button>
           <Button
             size="sm"
-            onClick={() => html && download("index.html", html, "text/html")}
-            disabled={!html}
+            onClick={() =>
+              result.ok && download("index.html", build(result.config), "text/html")
+            }
+            disabled={!result.ok}
           >
             Download index.html
           </Button>
@@ -305,13 +318,40 @@ export default function App() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="meta-favicon">Favicon URL (optional)</Label>
-                  <Input
-                    id="meta-favicon"
-                    value={draft.meta.favicon}
-                    onChange={(e) => setMeta("favicon", e.target.value)}
-                    placeholder="https://…/favicon.ico"
+                  <Label>Favicon (.ico / .png / .svg)</Label>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => iconRef.current?.click()}
+                    >
+                      Choose icon file
+                    </Button>
+                    {draft.meta.favicon ? (
+                      <img
+                        src={draft.meta.favicon}
+                        alt=""
+                        className="h-6 w-6 rounded object-contain"
+                      />
+                    ) : (
+                      <span className="text-xs text-muted-foreground">none</span>
+                    )}
+                  </div>
+                  <input
+                    ref={iconRef}
+                    type="file"
+                    accept=".ico,image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) uploadIcon(f);
+                      e.target.value = "";
+                    }}
                   />
+                  <p className="text-xs text-muted-foreground">
+                    Stored inline (data URL) in the page — no hosting needed.
+                  </p>
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -496,8 +536,8 @@ export default function App() {
         {/* Preview */}
         <div className="h-[80vh] lg:sticky lg:top-16 lg:h-[calc(100vh-6rem)]">
           <div className="h-full overflow-hidden rounded-xl border bg-background shadow-sm">
-            {html ? (
-              <iframe title="Preview" srcDoc={html} className="h-full w-full border-0" />
+            {result.ok ? (
+              <LivePreview config={result.config} />
             ) : (
               <div className="flex h-full items-center justify-center p-8 text-center">
                 <p className="text-sm text-destructive">{error}</p>
