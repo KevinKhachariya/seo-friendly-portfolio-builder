@@ -2,6 +2,10 @@
 
 **Live production portfolio made using this tool → [kevinkhachariya.qzz.io](https://kevinkhachariya.qzz.io)**
 
+**Demo:**
+
+[![Watch the demo](https://demos.kevinkhachariya.qzz.io/seofriendlyportfoliobuilder.jpg)](https://demos.kevinkhachariya.qzz.io/seofriendlyportfoliobuilder.mp4)
+
 A zero-friction, SEO-ready portfolio builder. Author your portfolio in a UI, then download a
 single static `index.html` ready to drop into Cloudflare Pages (or any static host).
 
