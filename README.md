@@ -12,8 +12,7 @@ single static `index.html` ready to drop into Cloudflare Pages (or any static ho
 ## How it works
 
 - **Authoring UI** — `npm run dev`. Forms for SEO meta, contact email, a template picker, and
-  portfolio items (add/remove/reorder). The live preview is the *actual artifact*, rendered in
-  an iframe.
+  portfolio items (add/remove/reorder). The live preview shows your changes.
 - **Artifact** — one static HTML file: fixed SEO head + swappable body template + lazy-loaded
   media. Zero framework JS (only a ~10-line lazy loader).
 - **CLI** — `npm run gen` builds `dist/index.html` headlessly from `portfolio.config.json`.
