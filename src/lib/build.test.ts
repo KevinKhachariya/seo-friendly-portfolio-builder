@@ -43,11 +43,14 @@ describe("artifact build", () => {
     expect(html).toContain('name="twitter:title"');
     expect(html).toContain("mailto:hello@jane.design");
     // canonical attribute casing (React 19 normalizer)
-    expect(html).toContain("playsinline=");
+    expect(html).toContain("playsinline");
     expect(html).toContain("charset=");
     expect(html).not.toMatch(/autoPlay=|playsInline=|charSet=/);
-    // lazy loader present
-    expect(html).toContain("IntersectionObserver");
+    // click-to-play loader present: video URL stays in data-src until click
+    expect(html).toContain("pf-video");
+    expect(html).toContain("data-src=");
+    expect(html).toContain('addEventListener("click"');
+    expect(html).not.toContain("IntersectionObserver");
   });
 
   it("renders every template without throwing", () => {
@@ -86,11 +89,14 @@ describe("artifact build", () => {
     expect(html).toContain('"url":"https://project.example.com"');
   });
 
-  it("renders videos muted with controls and no autoplay (click to play)", () => {
+  it("renders a poster + play-button facade, fetching video only on click", () => {
     const html = build(configSchema.parse(config));
-    expect(html).toContain("controls");
-    expect(html).toContain("muted");
-    expect(html).not.toContain("autoplay");
+    // facade: poster img + explicit play button, no <video> bytes upfront
+    expect(html).toContain("pf-play");
+    expect(html).toContain('aria-label="Play Dashboard"');
+    expect(html).toContain("https://cdn.example.com/poster.webp");
+    expect(html).toContain('data-src="https://cdn.example.com/demo.mp4"');
+    expect(html).not.toContain("<video");
   });
 });
 

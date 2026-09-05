@@ -2,6 +2,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import type { Config } from "./config";
 import { templates } from "./templates";
 import { SeoHead } from "./head";
+import { VIDEO_FACADE_CSS } from "./components";
 import { LAZY_MEDIA_SCRIPT } from "./lazy";
 import { FILTER_SCRIPT } from "./filter";
 import { normalizeHtml } from "./normalize";
@@ -16,6 +17,7 @@ export function build(config: Config): string {
       <head>
         <SeoHead config={config} />
         <style>{template.css}</style>
+        <style>{VIDEO_FACADE_CSS}</style>
       </head>
       <body className="pf-page">
         {template.render({ meta: config.meta, items: config.items, contact: config.contact })}
