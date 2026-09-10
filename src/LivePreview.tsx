@@ -36,6 +36,7 @@ export function LivePreview({ config }: { config: Config }) {
             meta: config.meta,
             items: config.items,
             contact: config.contact,
+            resume: config.resume,
           })}
         </div>
       </StrictMode>,

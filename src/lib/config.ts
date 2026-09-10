@@ -46,6 +46,11 @@ export const itemSchema = z.object({
   link: httpsUrl.optional(),
 });
 
+export const resumeSchema = z.object({
+  url: httpsUrl,
+  label: z.string().min(1, "Resume label is required").default("Resume"),
+});
+
 export const configSchema = z.object({
   meta: z.object({
     title: z.string().min(1, "Title is required"),
@@ -62,10 +67,12 @@ export const configSchema = z.object({
     email: z.string().email("Invalid email"),
     label: z.string().default("Contact"),
   }),
+  resume: resumeSchema.optional(),
   templateId: z.enum(["minimal", "editorial", "cartoony"]),
   items: z.array(itemSchema).min(1, "Add at least one item"),
 });
 
 export type Media = z.infer<typeof mediaSchema>;
 export type Item = z.infer<typeof itemSchema>;
+export type Resume = z.infer<typeof resumeSchema>;
 export type Config = z.infer<typeof configSchema>;

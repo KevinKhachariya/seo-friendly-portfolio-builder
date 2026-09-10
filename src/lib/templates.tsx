@@ -1,8 +1,8 @@
 import type { ReactElement } from "react";
-import { Contact, Grid, ProjectCard, SocialLinks, TagFilter } from "./components";
+import { Contact, Grid, ProjectCard, ResumeSection, SocialLinks, TagFilter } from "./components";
 import type { Config, Item } from "./config";
 
-type Ctx = { meta: Config["meta"]; items: Item[]; contact: Config["contact"] };
+type Ctx = { meta: Config["meta"]; items: Item[]; contact: Config["contact"]; resume?: Config["resume"] };
 
 // A swappable body template. To add your own:
 //   1. add its id to the templateId enum in config.ts
@@ -42,9 +42,20 @@ const minimal: Template = {
     .pf-tags li { font-size: .72rem; padding: .2rem .65rem; border: 1px solid #e5e5e5; border-radius: 999px; color: #404040; }
     .pf-link { margin-top: auto; padding-top: .5rem; font-size: .85rem; font-weight: 600; color: #171717; }
     .pf-contact { display: inline-block; margin-top: 3rem; padding: .65rem 1.5rem; background: #171717; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 500; }
+    .pf-resume { margin-bottom: 2.5rem; border: 1px solid #e5e5e5; border-radius: 12px; padding: 1.25rem; background: #fafafa; }
+    .pf-resume-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: 1rem; }
+    .pf-resume-title { font-size: 1.1rem; font-weight: 650; letter-spacing: -0.01em; }
+    .pf-resume-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .pf-resume-btn { font-size: .82rem; font-weight: 600; text-decoration: none; padding: .45rem .95rem; border-radius: 8px; border: 1px solid #171717; }
+    .pf-resume-download { background: #171717; color: #fff; }
+    .pf-resume-open { background: #fff; color: #171717; }
+    .pf-resume-frame { width: 100%; height: 600px; border: 1px solid #e5e5e5; border-radius: 8px; background: #fff; }
+    .pf-resume-fallback { margin-top: .6rem; font-size: .82rem; color: #525252; }
+    .pf-resume-fallback a { color: #171717; font-weight: 600; }
+    @media (max-width: 640px) { .pf-resume-frame { height: 420px; } .pf-resume { padding: 1rem; } }
     footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid #e5e5e5; color: #a3a3a3; font-size: .85rem; }
   `,
-  render({ meta, items, contact }) {
+  render({ meta, items, contact, resume }) {
     return (
       <main>
         <header>
@@ -52,6 +63,7 @@ const minimal: Template = {
           <p>{meta.description}</p>
         </header>
         <SocialLinks meta={meta} />
+        <ResumeSection resume={resume} />
         <TagFilter items={items} />
         <Grid>
           {items.map((item) => (
@@ -91,9 +103,20 @@ const editorial: Template = {
     .pf-tags li { font-size: .75rem; font-style: italic; color: #78716c; }
     .pf-link { margin-top: auto; padding-top: .75rem; font-size: .9rem; font-style: italic; color: #1c1917; }
     .pf-contact { display: inline-block; margin-top: 3rem; padding: .8rem 2rem; border: 1px solid #1c1917; color: #1c1917; text-decoration: none; font-style: italic; }
+    .pf-resume { margin-bottom: 3rem; border-top: 1px solid #d6d3d1; border-bottom: 1px solid #d6d3d1; padding: 1.75rem 0; }
+    .pf-resume-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .75rem; margin-bottom: 1.25rem; }
+    .pf-resume-title { font-size: 1.5rem; font-weight: 400; font-style: italic; }
+    .pf-resume-actions { display: flex; flex-wrap: wrap; gap: .6rem; }
+    .pf-resume-btn { font-size: .85rem; font-style: italic; text-decoration: none; padding: .4rem 1rem; border: 1px solid #1c1917; color: #1c1917; }
+    .pf-resume-download { background: #1c1917; color: #faf7f2; }
+    .pf-resume-open { background: transparent; }
+    .pf-resume-frame { width: 100%; height: 600px; border: 1px solid #d6d3d1; background: #fff; }
+    .pf-resume-fallback { margin-top: .6rem; font-size: .85rem; font-style: italic; color: #57534e; }
+    .pf-resume-fallback a { color: #1c1917; }
+    @media (max-width: 640px) { .pf-resume-frame { height: 420px; } }
     footer { margin-top: 5rem; text-align: center; color: #a8a29e; font-size: .85rem; }
   `,
-  render({ meta, items, contact }) {
+  render({ meta, items, contact, resume }) {
     return (
       <main>
         <header>
@@ -101,6 +124,7 @@ const editorial: Template = {
           <p>{meta.description}</p>
         </header>
         <SocialLinks meta={meta} />
+        <ResumeSection resume={resume} />
         <TagFilter items={items} />
         <Grid>
           {items.map((item) => (
@@ -199,9 +223,20 @@ const cartoony: Template = {
       box-shadow: 5px 5px 0 #151515;
     }
     .pf-contact:hover { background: #151515; color: #f7f3e8; }
+    .pf-resume { margin-bottom: 2.5rem; background: #fff; border: 3px solid #151515; padding: 1.25rem; box-shadow: 6px 6px 0 #151515; transform: rotate(.4deg); }
+    .pf-resume-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: 1rem; }
+    .pf-resume-title { font-family: "Arial Black", Impact, sans-serif; font-size: 1.25rem; text-transform: uppercase; }
+    .pf-resume-actions { display: flex; flex-wrap: wrap; gap: .6rem; }
+    .pf-resume-btn { font-family: "Arial Black", Impact, sans-serif; font-size: .75rem; text-transform: uppercase; text-decoration: none; padding: .45rem .9rem; border: 3px solid #151515; box-shadow: 3px 3px 0 #151515; }
+    .pf-resume-download { background: #e63900; color: #fff; }
+    .pf-resume-open { background: #fff; color: #151515; }
+    .pf-resume-frame { width: 100%; height: 600px; border: 3px solid #151515; background: #fff; }
+    .pf-resume-fallback { margin-top: .6rem; font-size: .82rem; font-weight: bold; }
+    .pf-resume-fallback a { color: #e63900; }
+    @media (max-width: 640px) { .pf-resume-frame { height: 420px; } .pf-resume { transform: none; } }
     footer { margin-top: 3.5rem; font-weight: bold; text-transform: uppercase; font-size: .8rem; }
   `,
-  render({ meta, items, contact }) {
+  render({ meta, items, contact, resume }) {
     return (
       <main>
         <header>
@@ -209,6 +244,7 @@ const cartoony: Template = {
           <p>{meta.description}</p>
         </header>
         <SocialLinks meta={meta} />
+        <ResumeSection resume={resume} />
         <TagFilter items={items} />
         <Grid>
           {items.map((item) => (

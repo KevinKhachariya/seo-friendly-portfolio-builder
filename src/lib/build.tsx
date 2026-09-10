@@ -20,7 +20,7 @@ export function build(config: Config): string {
         <style>{VIDEO_FACADE_CSS}</style>
       </head>
       <body className="pf-page">
-        {template.render({ meta: config.meta, items: config.items, contact: config.contact })}
+        {template.render({ meta: config.meta, items: config.items, contact: config.contact, resume: config.resume })}
         <script>{LAZY_MEDIA_SCRIPT}</script>
         <script>{FILTER_SCRIPT}</script>
       </body>
