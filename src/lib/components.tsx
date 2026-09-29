@@ -135,6 +135,35 @@ export function TagFilter({ items }: { items: Item[] }) {
   );
 }
 
+export function SiteHeader({ meta, resume }: { meta: Config["meta"]; resume?: Config["resume"] }) {
+  return (
+    <header className="pf-site-header">
+      <div className="pf-site-inner">
+        <a className="pf-brand" href="#top">
+          {meta.title}
+        </a>
+        <nav className="pf-nav" aria-label="Primary">
+          <a href="#projects">Projects</a>
+          {resume ? <a href="#resume">{resume.label || "Resume"}</a> : null}
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+export function ProjectsSection({ items }: { items: Item[] }) {
+  return (
+    <section id="projects" className="pf-projects" aria-label="Projects">
+      <TagFilter items={items} />
+      <Grid>
+        {items.map((item) => (
+          <ProjectCard key={item.id} item={item} />
+        ))}
+      </Grid>
+    </section>
+  );
+}
+
 export function SocialLinks({ meta }: { meta: Config["meta"] }) {
   const links = [
     meta.github ? { href: meta.github, label: "GitHub" } : null,
@@ -162,55 +191,18 @@ export function Contact({ contact }: { contact: Config["contact"] }) {
   );
 }
 
-function resumeFileName(url: string): string {
-  try {
-    const pathname = new URL(url).pathname;
-    const last = pathname.split("/").filter(Boolean).pop();
-    if (last && last.includes(".")) return last;
-  } catch {
-    // fall through to default
-  }
-  return "resume.pdf";
-}
-
-// Native <iframe src="file.pdf"> downloads instead of previewing on most
-// mobile browsers (Samsung Internet, Chrome Android, iOS Safari). Route the
-// embed through a universal HTML viewer so the in-page preview works
-// everywhere. Direct Download / Open buttons below still use the raw URL.
-export function resumeViewerSrc(url: string): string {
-  try {
-    const u = new URL(url);
-    // Google Drive share link -> embeddable /preview (works on mobile as-is).
-    const driveMatch = u.pathname.match(/\/file\/d\/([^/]+)/);
-    if (u.hostname.includes("drive.google.com") && driveMatch) {
-      return `https://drive.google.com/file/d/${driveMatch[1]}/preview`;
-    }
-    // Dropbox share link -> direct file so the viewer can fetch it.
-    if (u.hostname.includes("dropbox.com")) {
-      u.searchParams.set("raw", "1");
-      u.searchParams.delete("dl");
-      return `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(u.toString())}`;
-    }
-    return `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(url)}`;
-  } catch {
-    return url;
-  }
-}
-
 export function ResumeSection({ resume }: { resume: Config["resume"] }) {
   if (!resume) return null;
-  const fileName = resumeFileName(resume.url);
-  const viewerSrc = resumeViewerSrc(resume.url);
   const title = resume.label || "Resume";
   return (
-    <section className="pf-resume" aria-label={title}>
+    <section id="resume" className="pf-resume" aria-label={title}>
       <div className="pf-resume-head">
         <h2 className="pf-resume-title">{title}</h2>
         <div className="pf-resume-actions">
           <a
             className="pf-resume-btn pf-resume-download"
             href={resume.url}
-            download={fileName}
+            download
             rel="noopener noreferrer"
           >
             Download
@@ -228,7 +220,7 @@ export function ResumeSection({ resume }: { resume: Config["resume"] }) {
       <div className="pf-resume-viewer">
         <iframe
           className="pf-resume-frame"
-          src={viewerSrc}
+          src={resume.url}
           title={`${title} preview`}
           loading="lazy"
           allow="fullscreen"
@@ -239,7 +231,7 @@ export function ResumeSection({ resume }: { resume: Config["resume"] }) {
             Open it here
           </a>{" "}
           or{" "}
-          <a href={resume.url} download={fileName} rel="noopener noreferrer">
+          <a href={resume.url} download rel="noopener noreferrer">
             download the file
           </a>
           .
