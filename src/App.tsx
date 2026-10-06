@@ -28,7 +28,7 @@ type DraftItem = {
   link: string;
 };
 type Draft = {
-  meta: { title: string; description: string; canonicalUrl: string; ogImage: string; lang: string; favicon: string; github: string; x: string; linkedin: string };
+  meta: { title: string; description: string; canonicalUrl: string; ogImage: string; lang: string; favicon: string; github: string; x: string; linkedin: string; resumeUrl: string };
   contact: { email: string; label: string };
   templateId: "minimal" | "editorial" | "cartoony";
   items: DraftItem[];
@@ -45,6 +45,7 @@ const sample: Draft = {
     github: "",
     x: "",
     linkedin: "",
+    resumeUrl: "",
   },
   contact: { email: "hello@jane.design", label: "Get in touch" },
   templateId: "minimal",
@@ -76,6 +77,7 @@ function toConfig(d: Draft): { ok: true; config: Config } | { ok: false; error: 
       ...(d.meta.github ? { github: d.meta.github } : {}),
       ...(d.meta.x ? { x: d.meta.x } : {}),
       ...(d.meta.linkedin ? { linkedin: d.meta.linkedin } : {}),
+      ...(d.meta.resumeUrl ? { resumeUrl: d.meta.resumeUrl } : {}),
     },
     contact: { email: d.contact.email, label: d.contact.label || "Contact" },
     templateId: d.templateId,
@@ -112,6 +114,7 @@ function configToDraft(c: Config): Draft {
       github: c.meta.github ?? "",
       x: c.meta.x ?? "",
       linkedin: c.meta.linkedin ?? "",
+      resumeUrl: c.meta.resumeUrl ?? "",
     },
     contact: { email: c.contact.email, label: c.contact.label },
     templateId: c.templateId,
@@ -382,6 +385,18 @@ export default function App() {
                     placeholder="https://linkedin.com/in/…"
                   />
                 </div>
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="meta-resume">Resume URL (PDF, optional)</Label>
+                <Input
+                  id="meta-resume"
+                  value={draft.meta.resumeUrl}
+                  onChange={(e) => setMeta("resumeUrl", e.target.value)}
+                  placeholder="https://…/resume.pdf"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Shows a download button on top — no embedded viewer.
+                </p>
               </div>
             </CardContent>
           </Card>

@@ -26,5 +26,27 @@ export const FILTER_SCRIPT = `
       });
     });
   });
+  // "View more" toggle for collapsed tag pills. Extra pills render with
+  // [data-collapsed] + hidden; the toggle unhides them (and back).
+  document.querySelectorAll("[data-filter-more]").forEach(function (more) {
+    more.addEventListener("click", function () {
+      var filter = more.closest(".pf-filter");
+      if (!filter) return;
+      var extras = filter.querySelectorAll("[data-collapsed]");
+      var collapsed = false;
+      extras.forEach(function (el) {
+        if (el.hasAttribute("hidden")) collapsed = true;
+      });
+      extras.forEach(function (el) {
+        if (collapsed) {
+          el.removeAttribute("hidden");
+        } else {
+          el.setAttribute("hidden", "");
+        }
+      });
+      var total = more.getAttribute("data-collapsed-count") || extras.length;
+      more.textContent = collapsed ? "Show less" : "View more (+" + total + ")";
+    });
+  });
 })();
 `;

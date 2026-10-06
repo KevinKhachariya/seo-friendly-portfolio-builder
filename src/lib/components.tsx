@@ -120,17 +120,66 @@ export function ProjectCard({ item }: { item: Item }) {
   );
 }
 
+// How many tag pills are visible before the rest collapse behind "View more".
+export const MAX_VISIBLE_TAGS = 5;
+
 export function TagFilter({ items }: { items: Item[] }) {
+  const [expanded, setExpanded] = useState(false);
   const tags = [...new Set(items.flatMap((item) => item.tags))];
   if (tags.length === 0) return null;
+  const hiddenCount = tags.length - MAX_VISIBLE_TAGS;
   return (
     <div className="pf-filter" role="group" aria-label="Filter by tag">
       <span className="pf-filter-label">Filter by tag:</span>
-      {tags.map((tag) => (
-        <button key={tag} type="button" className="pf-filter-btn" data-tag={tag}>
-          {tag}
+      {tags.map((tag, i) =>
+        i < MAX_VISIBLE_TAGS || expanded ? (
+          <button key={tag} type="button" className="pf-filter-btn" data-tag={tag}>
+            {tag}
+          </button>
+        ) : (
+          <button
+            key={tag}
+            type="button"
+            className="pf-filter-btn"
+            data-tag={tag}
+            data-collapsed=""
+            hidden
+          >
+            {tag}
+          </button>
+        ),
+      )}
+      {hiddenCount > 0 ? (
+        <button
+          key="__more"
+          type="button"
+          className="pf-filter-more"
+          data-filter-more=""
+          data-collapsed-count={hiddenCount}
+          onClick={() => setExpanded((v) => !v)}
+        >
+          {expanded ? "Show less" : `View more (+${hiddenCount})`}
         </button>
-      ))}
+      ) : null}
+    </div>
+  );
+}
+
+// Download-only resume button. Intentionally no <iframe>/<embed>/<object>
+// viewer — just a link with the download attribute.
+export function ResumeButton({ meta }: { meta: Config["meta"] }) {
+  if (!meta.resumeUrl) return null;
+  return (
+    <div className="pf-topbar">
+      <a
+        className="pf-resume-btn"
+        href={meta.resumeUrl}
+        download
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Resume
+      </a>
     </div>
   );
 }
