@@ -3,6 +3,7 @@ import { createRoot, type Root } from "react-dom/client";
 import type { Config } from "@/lib/config";
 import { templates } from "@/lib/templates";
 import { VIDEO_FACADE_CSS } from "@/lib/components";
+import { FILTER_SHOW_MORE_CSS } from "@/lib/filter";
 
 // Live preview rendered directly with React inside a shadow root. The shadow
 // isolates the template's CSS from the authoring UI, and React reconciliation
@@ -31,6 +32,7 @@ export function LivePreview({ config }: { config: Config }) {
       <StrictMode>
         <style>{template.css}</style>
         <style>{VIDEO_FACADE_CSS}</style>
+        <style>{FILTER_SHOW_MORE_CSS}</style>
         <div className="pf-page">
           {template.render({
             meta: config.meta,

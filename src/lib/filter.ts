@@ -1,6 +1,15 @@
+// Shared safety net: the `hidden` attribute must win over button styling
+// in every template so collapsed extra tags stay hidden until expanded.
+export const FILTER_SHOW_MORE_CSS = `
+  .pf-filter-btn[hidden] { display: none !important; }
+`;
+
 // Client-side tag filter: the only interactive JS in the artifact besides the
 // lazy loader. Clicking a tag toggles it; items matching ALL selected tags are
 // shown (empty selection = show everything).
+// Also handles the "Show more tags" toggle (data-show-more): reveals extra
+// filter buttons hidden with data-tag-extra + hidden, so the static artifact
+// matches the React LivePreview without-duplicating state.
 export const FILTER_SCRIPT = `
 (function () {
   var selected = {};
@@ -24,6 +33,26 @@ export const FILTER_SCRIPT = `
         });
         card.style.display = match ? "" : "none";
       });
+    });
+  });
+  var moreBtns = document.querySelectorAll("[data-show-more]");
+  moreBtns.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var filter = btn.closest(".pf-filter");
+      if (!filter) return;
+      var expanded = btn.getAttribute("aria-expanded") === "true";
+      var next = !expanded;
+      btn.setAttribute("aria-expanded", next ? "true" : "false");
+      var extra = filter.querySelectorAll("[data-tag-extra]");
+      extra.forEach(function (el) {
+        if (next) {
+          el.removeAttribute("hidden");
+        } else {
+          el.setAttribute("hidden", "");
+        }
+      });
+      var collapsedLabel = btn.getAttribute("data-collapsed-label") || "Show more";
+      btn.textContent = next ? "Show less" : collapsedLabel;
     });
   });
 })();

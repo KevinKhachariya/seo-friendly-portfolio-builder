@@ -120,17 +120,48 @@ export function ProjectCard({ item }: { item: Item }) {
   );
 }
 
+export const MAX_VISIBLE_TAGS = 8;
+
 export function TagFilter({ items }: { items: Item[] }) {
   const tags = [...new Set(items.flatMap((item) => item.tags))];
+  const [expanded, setExpanded] = useState(false);
   if (tags.length === 0) return null;
+  const hiddenCount = tags.length - MAX_VISIBLE_TAGS;
+  const collapsedLabel = `Show more (+${hiddenCount})`;
   return (
     <div className="pf-filter" role="group" aria-label="Filter by tag">
       <span className="pf-filter-label">Filter by tag:</span>
-      {tags.map((tag) => (
-        <button key={tag} type="button" className="pf-filter-btn" data-tag={tag}>
-          {tag}
+      {tags.map((tag, i) =>
+        i < MAX_VISIBLE_TAGS ? (
+          <button key={tag} type="button" className="pf-filter-btn" data-tag={tag}>
+            {tag}
+          </button>
+        ) : (
+          <button
+            key={tag}
+            type="button"
+            className="pf-filter-btn"
+            data-tag={tag}
+            data-tag-extra=""
+            hidden={!expanded}
+          >
+            {tag}
+          </button>
+        ),
+      )}
+      {hiddenCount > 0 ? (
+        <button
+          key="__show-more"
+          type="button"
+          className="pf-filter-btn"
+          data-show-more=""
+          data-collapsed-label={collapsedLabel}
+          aria-expanded={expanded}
+          onClick={() => setExpanded((v) => !v)}
+        >
+          {expanded ? "Show less" : collapsedLabel}
         </button>
-      ))}
+      ) : null}
     </div>
   );
 }
@@ -144,7 +175,11 @@ export function SiteHeader({ meta, resume }: { meta: Config["meta"]; resume?: Co
         </a>
         <nav className="pf-nav" aria-label="Primary">
           <a href="#projects">Projects</a>
-          {resume ? <a href="#resume">{resume.label || "Resume"}</a> : null}
+          {resume ? (
+            <a href={resume.url} target="_blank" rel="noopener noreferrer">
+              Resume
+            </a>
+          ) : null}
         </nav>
       </div>
     </header>
@@ -188,55 +223,5 @@ export function Contact({ contact }: { contact: Config["contact"] }) {
     <a className="pf-contact" href={`mailto:${contact.email}`}>
       {contact.label}
     </a>
-  );
-}
-
-export function ResumeSection({ resume }: { resume: Config["resume"] }) {
-  if (!resume) return null;
-  const title = resume.label || "Resume";
-  return (
-    <section id="resume" className="pf-resume" aria-label={title}>
-      <div className="pf-resume-head">
-        <h2 className="pf-resume-title">{title}</h2>
-        <div className="pf-resume-actions">
-          <a
-            className="pf-resume-btn pf-resume-download"
-            href={resume.url}
-            download
-            rel="noopener noreferrer"
-          >
-            Download
-          </a>
-          <a
-            className="pf-resume-btn pf-resume-open"
-            href={resume.url}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Open in new tab ↗
-          </a>
-        </div>
-      </div>
-      <div className="pf-resume-viewer">
-        <iframe
-          className="pf-resume-frame"
-          src={resume.url}
-          title={`${title} preview`}
-          loading="lazy"
-          allow="fullscreen"
-        />
-        <p className="pf-resume-fallback">
-          Can&apos;t see the preview?{" "}
-          <a href={resume.url} target="_blank" rel="noopener noreferrer">
-            Open it here
-          </a>{" "}
-          or{" "}
-          <a href={resume.url} download rel="noopener noreferrer">
-            download the file
-          </a>
-          .
-        </p>
-      </div>
-    </section>
   );
 }

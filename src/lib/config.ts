@@ -48,7 +48,6 @@ export const itemSchema = z.object({
 
 export const resumeSchema = z.object({
   url: httpsUrl,
-  label: z.string().min(1, "Resume label is required").default("Resume"),
 });
 
 export const configSchema = z.object({

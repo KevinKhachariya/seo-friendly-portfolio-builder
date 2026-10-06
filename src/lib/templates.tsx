@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import { Contact, ProjectsSection, ResumeSection, SiteHeader, SocialLinks } from "./components";
+import { Contact, ProjectsSection, SiteHeader, SocialLinks } from "./components";
 import type { Config, Item } from "./config";
 
 type Ctx = { meta: Config["meta"]; items: Item[]; contact: Config["contact"]; resume?: Config["resume"] };
@@ -32,7 +32,7 @@ const minimal: Template = {
     .pf-hero { margin-bottom: 3rem; }
     h1 { font-size: clamp(1.6rem, 1.2rem + 2.5vw, 2.25rem); letter-spacing: -0.03em; margin: 0 0 .5rem; overflow-wrap: anywhere; word-break: break-word; text-wrap: balance; max-width: 100%; }
     .pf-hero p { color: #525252; font-size: clamp(0.95rem, 0.9rem + 0.5vw, 1.05rem); max-width: 56ch; overflow-wrap: anywhere; word-break: break-word; }
-    .pf-projects, .pf-resume { scroll-margin-top: 4.5rem; }
+    .pf-projects { scroll-margin-top: 4.5rem; }
     .pf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 2rem; }
     .pf-filter { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin-bottom: 2rem; }
     .pf-filter-label { font-size: .8rem; color: #525252; }
@@ -49,17 +49,7 @@ const minimal: Template = {
     .pf-tags li { font-size: .72rem; padding: .2rem .65rem; border: 1px solid #e5e5e5; border-radius: 999px; color: #404040; }
     .pf-link { margin-top: auto; padding-top: .5rem; font-size: .85rem; font-weight: 600; color: #171717; }
     .pf-contact { display: inline-block; margin-top: 3rem; padding: .65rem 1.5rem; background: #171717; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 500; }
-    .pf-resume { margin-bottom: 2.5rem; border: 1px solid #e5e5e5; border-radius: 12px; padding: 1.25rem; background: #fafafa; }
-    .pf-resume-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: 1rem; }
-    .pf-resume-title { font-size: 1.1rem; font-weight: 650; letter-spacing: -0.01em; }
-    .pf-resume-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
-    .pf-resume-btn { font-size: .82rem; font-weight: 600; text-decoration: none; padding: .45rem .95rem; border-radius: 8px; border: 1px solid #171717; }
-    .pf-resume-download { background: #171717; color: #fff; }
-    .pf-resume-open { background: #fff; color: #171717; }
-    .pf-resume-frame { width: 100%; height: 600px; border: 1px solid #e5e5e5; border-radius: 8px; background: #fff; }
-    .pf-resume-fallback { margin-top: .6rem; font-size: .82rem; color: #525252; }
-    .pf-resume-fallback a { color: #171717; font-weight: 600; }
-    @media (max-width: 640px) { .pf-resume-frame { height: 420px; } .pf-resume { padding: 1rem; } main { padding: 2rem 1rem; } }
+    @media (max-width: 640px) { main { padding: 2rem 1rem; } }
     footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid #e5e5e5; color: #a3a3a3; font-size: .85rem; }
   `,
   render({ meta, items, contact, resume }) {
@@ -72,7 +62,6 @@ const minimal: Template = {
             <p>{meta.description}</p>
           </header>
           <SocialLinks meta={meta} />
-          <ResumeSection resume={resume} />
           <ProjectsSection items={items} />
           <Contact contact={contact} />
           <footer>© {new Date().getFullYear()} {meta.title}</footer>
@@ -98,7 +87,7 @@ const editorial: Template = {
     .pf-hero { margin-bottom: 4rem; border-bottom: 1px solid #d6d3d1; padding-bottom: 2rem; }
     h1 { font-size: clamp(1.8rem, 1.3rem + 3vw, 3rem); font-weight: 400; letter-spacing: -0.02em; margin: 0 0 .75rem; overflow-wrap: anywhere; word-break: break-word; text-wrap: balance; max-width: 100%; }
     .pf-hero p { color: #57534e; font-size: clamp(1rem, 0.92rem + 0.6vw, 1.15rem); font-style: italic; max-width: 60ch; overflow-wrap: anywhere; word-break: break-word; }
-    .pf-projects, .pf-resume { scroll-margin-top: 4.5rem; }
+    .pf-projects { scroll-margin-top: 4.5rem; }
     .pf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 3rem 2rem; }
     .pf-filter { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-bottom: 3rem; }
     .pf-filter-label { font-size: .85rem; font-style: italic; color: #57534e; }
@@ -115,17 +104,7 @@ const editorial: Template = {
     .pf-tags li { font-size: .75rem; font-style: italic; color: #78716c; }
     .pf-link { margin-top: auto; padding-top: .75rem; font-size: .9rem; font-style: italic; color: #1c1917; }
     .pf-contact { display: inline-block; margin-top: 3rem; padding: .8rem 2rem; border: 1px solid #1c1917; color: #1c1917; text-decoration: none; font-style: italic; }
-    .pf-resume { margin-bottom: 3rem; border-top: 1px solid #d6d3d1; border-bottom: 1px solid #d6d3d1; padding: 1.75rem 0; }
-    .pf-resume-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .75rem; margin-bottom: 1.25rem; }
-    .pf-resume-title { font-size: 1.5rem; font-weight: 400; font-style: italic; }
-    .pf-resume-actions { display: flex; flex-wrap: wrap; gap: .6rem; }
-    .pf-resume-btn { font-size: .85rem; font-style: italic; text-decoration: none; padding: .4rem 1rem; border: 1px solid #1c1917; color: #1c1917; }
-    .pf-resume-download { background: #1c1917; color: #faf7f2; }
-    .pf-resume-open { background: transparent; }
-    .pf-resume-frame { width: 100%; height: 600px; border: 1px solid #d6d3d1; background: #fff; }
-    .pf-resume-fallback { margin-top: .6rem; font-size: .85rem; font-style: italic; color: #57534e; }
-    .pf-resume-fallback a { color: #1c1917; }
-    @media (max-width: 640px) { .pf-resume-frame { height: 420px; } main { padding: 2.5rem 1rem; } }
+    @media (max-width: 640px) { main { padding: 2.5rem 1rem; } }
     footer { margin-top: 5rem; text-align: center; color: #a8a29e; font-size: .85rem; }
   `,
   render({ meta, items, contact, resume }) {
@@ -138,7 +117,6 @@ const editorial: Template = {
             <p>{meta.description}</p>
           </header>
           <SocialLinks meta={meta} />
-          <ResumeSection resume={resume} />
           <ProjectsSection items={items} />
           <Contact contact={contact} />
           <footer>{meta.title} — {new Date().getFullYear()}</footer>
@@ -169,7 +147,7 @@ const cartoony: Template = {
     .pf-nav { display: flex; gap: .6rem; flex-shrink: 0; }
     .pf-nav a { font-family: "Arial Black", Impact, sans-serif; font-size: .72rem; text-transform: uppercase; text-decoration: none; color: #151515; background: #fff; border: 2px solid #f7f3e8; padding: .25rem .65rem; box-shadow: 3px 3px 0 #e63900; }
     .pf-nav a:hover { background: #e63900; color: #fff; }
-    .pf-projects, .pf-resume { scroll-margin-top: 4.5rem; }
+    .pf-projects { scroll-margin-top: 4.5rem; }
     .pf-hero { margin-bottom: 2.5rem; }
     h1 {
       font-family: "Arial Black", "Franklin Gothic Bold", Impact, sans-serif;
@@ -244,17 +222,7 @@ const cartoony: Template = {
       box-shadow: 5px 5px 0 #151515;
     }
     .pf-contact:hover { background: #151515; color: #f7f3e8; }
-    .pf-resume { margin-bottom: 2.5rem; background: #fff; border: 3px solid #151515; padding: 1.25rem; box-shadow: 6px 6px 0 #151515; transform: rotate(.4deg); }
-    .pf-resume-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: 1rem; }
-    .pf-resume-title { font-family: "Arial Black", Impact, sans-serif; font-size: 1.25rem; text-transform: uppercase; }
-    .pf-resume-actions { display: flex; flex-wrap: wrap; gap: .6rem; }
-    .pf-resume-btn { font-family: "Arial Black", Impact, sans-serif; font-size: .75rem; text-transform: uppercase; text-decoration: none; padding: .45rem .9rem; border: 3px solid #151515; box-shadow: 3px 3px 0 #151515; }
-    .pf-resume-download { background: #e63900; color: #fff; }
-    .pf-resume-open { background: #fff; color: #151515; }
-    .pf-resume-frame { width: 100%; height: 600px; border: 3px solid #151515; background: #fff; }
-    .pf-resume-fallback { margin-top: .6rem; font-size: .82rem; font-weight: bold; }
-    .pf-resume-fallback a { color: #e63900; }
-    @media (max-width: 640px) { .pf-resume-frame { height: 420px; } .pf-resume { transform: none; } main { padding: 2rem 1rem; } h1 { transform: none; } }
+    @media (max-width: 640px) { main { padding: 2rem 1rem; } h1 { transform: none; } }
     footer { margin-top: 3.5rem; font-weight: bold; text-transform: uppercase; font-size: .8rem; }
   `,
   render({ meta, items, contact, resume }) {
@@ -267,7 +235,6 @@ const cartoony: Template = {
             <p>{meta.description}</p>
           </header>
           <SocialLinks meta={meta} />
-          <ResumeSection resume={resume} />
           <ProjectsSection items={items} />
           <Contact contact={contact} />
           <footer>© {new Date().getFullYear()} {meta.title}</footer>
