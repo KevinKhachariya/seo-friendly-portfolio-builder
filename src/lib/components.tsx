@@ -184,6 +184,35 @@ export function ResumeButton({ meta }: { meta: Config["meta"] }) {
   );
 }
 
+export function SiteHeader({ meta, resume }: { meta: Config["meta"]; resume?: Config["resume"] }) {
+  return (
+    <header className="pf-site-header">
+      <div className="pf-site-inner">
+        <a className="pf-brand" href="#top">
+          {meta.title}
+        </a>
+        <nav className="pf-nav" aria-label="Primary">
+          <a href="#projects">Projects</a>
+          {resume ? <a href="#resume">{resume.label || "Resume"}</a> : null}
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+export function ProjectsSection({ items }: { items: Item[] }) {
+  return (
+    <section id="projects" className="pf-projects" aria-label="Projects">
+      <TagFilter items={items} />
+      <Grid>
+        {items.map((item) => (
+          <ProjectCard key={item.id} item={item} />
+        ))}
+      </Grid>
+    </section>
+  );
+}
+
 export function SocialLinks({ meta }: { meta: Config["meta"] }) {
   const links = [
     meta.github ? { href: meta.github, label: "GitHub" } : null,
@@ -208,5 +237,55 @@ export function Contact({ contact }: { contact: Config["contact"] }) {
     <a className="pf-contact" href={`mailto:${contact.email}`}>
       {contact.label}
     </a>
+  );
+}
+
+export function ResumeSection({ resume }: { resume: Config["resume"] }) {
+  if (!resume) return null;
+  const title = resume.label || "Resume";
+  return (
+    <section id="resume" className="pf-resume" aria-label={title}>
+      <div className="pf-resume-head">
+        <h2 className="pf-resume-title">{title}</h2>
+        <div className="pf-resume-actions">
+          <a
+            className="pf-resume-btn pf-resume-download"
+            href={resume.url}
+            download
+            rel="noopener noreferrer"
+          >
+            Download
+          </a>
+          <a
+            className="pf-resume-btn pf-resume-open"
+            href={resume.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open in new tab ↗
+          </a>
+        </div>
+      </div>
+      <div className="pf-resume-viewer">
+        <iframe
+          className="pf-resume-frame"
+          src={resume.url}
+          title={`${title} preview`}
+          loading="lazy"
+          allow="fullscreen"
+        />
+        <p className="pf-resume-fallback">
+          Can&apos;t see the preview?{" "}
+          <a href={resume.url} target="_blank" rel="noopener noreferrer">
+            Open it here
+          </a>{" "}
+          or{" "}
+          <a href={resume.url} download rel="noopener noreferrer">
+            download the file
+          </a>
+          .
+        </p>
+      </div>
+    </section>
   );
 }

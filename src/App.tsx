@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUp, GripVertical, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -30,6 +30,7 @@ type DraftItem = {
 type Draft = {
   meta: { title: string; description: string; canonicalUrl: string; ogImage: string; lang: string; favicon: string; github: string; x: string; linkedin: string; resumeUrl: string };
   contact: { email: string; label: string };
+  resume: { url: string; label: string };
   templateId: "minimal" | "editorial" | "cartoony";
   items: DraftItem[];
 };
@@ -48,6 +49,7 @@ const sample: Draft = {
     resumeUrl: "",
   },
   contact: { email: "hello@jane.design", label: "Get in touch" },
+  resume: { url: "", label: "Resume" },
   templateId: "minimal",
   items: [
     {
@@ -80,6 +82,9 @@ function toConfig(d: Draft): { ok: true; config: Config } | { ok: false; error: 
       ...(d.meta.resumeUrl ? { resumeUrl: d.meta.resumeUrl } : {}),
     },
     contact: { email: d.contact.email, label: d.contact.label || "Contact" },
+    ...(d.resume.url.trim()
+      ? { resume: { url: d.resume.url.trim(), label: d.resume.label.trim() || "Resume" } }
+      : {}),
     templateId: d.templateId,
     items: d.items.map((it) => ({
       id: it.id,
@@ -117,6 +122,7 @@ function configToDraft(c: Config): Draft {
       resumeUrl: c.meta.resumeUrl ?? "",
     },
     contact: { email: c.contact.email, label: c.contact.label },
+    resume: c.resume ? { url: c.resume.url, label: c.resume.label } : { url: "", label: "Resume" },
     templateId: c.templateId,
     items: c.items.map((it) => ({
       id: it.id,
@@ -136,6 +142,7 @@ export default function App() {
   const [draft, setDraft] = useState<Draft>(sample);
   const fileRef = useRef<HTMLInputElement>(null);
   const iconRef = useRef<HTMLInputElement>(null);
+  const dragIndex = useRef<number | null>(null);
 
   const result = useMemo(() => toConfig(draft), [draft]);
   const error = result.ok ? null : result.error;
@@ -144,6 +151,8 @@ export default function App() {
     setDraft((d) => ({ ...d, meta: { ...d.meta, [k]: v } }));
   const setContact = <K extends keyof Draft["contact"]>(k: K, v: Draft["contact"][K]) =>
     setDraft((d) => ({ ...d, contact: { ...d.contact, [k]: v } }));
+  const setResume = <K extends keyof Draft["resume"]>(k: K, v: Draft["resume"][K]) =>
+    setDraft((d) => ({ ...d, resume: { ...d.resume, [k]: v } }));
 
   const addItem = () =>
     setDraft((d) => ({
@@ -169,6 +178,34 @@ export default function App() {
 
   const removeItem = (id: string) =>
     setDraft((d) => ({ ...d, items: d.items.filter((it) => it.id !== id) }));
+
+  const moveItem = (index: number, dir: -1 | 1) =>
+    setDraft((d) => {
+      const next = [...d.items];
+      const j = index + dir;
+      if (index < 0 || index >= next.length || j < 0 || j >= next.length) return d;
+      [next[index], next[j]] = [next[j], next[index]];
+      return { ...d, items: next };
+    });
+
+  const moveToTop = (index: number) =>
+    setDraft((d) => {
+      if (index <= 0 || index >= d.items.length) return d;
+      const next = [...d.items];
+      const [item] = next.splice(index, 1);
+      next.unshift(item);
+      return { ...d, items: next };
+    });
+
+  const reorderItems = (from: number, to: number) =>
+    setDraft((d) => {
+      if (from === to || from < 0 || to < 0 || from >= d.items.length || to >= d.items.length)
+        return d;
+      const next = [...d.items];
+      const [item] = next.splice(from, 1);
+      next.splice(to, 0, item);
+      return { ...d, items: next };
+    });
 
   const download = (name: string, content: string, type: string) => {
     const blob = new Blob([content], { type });
@@ -427,26 +464,155 @@ export default function App() {
             </CardContent>
           </Card>
 
+          <Card>
+            <CardHeader>
+              <CardTitle>Resume</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_200px]">
+                <div className="space-y-1.5">
+                  <Label htmlFor="resume-url">Resume URL (https, optional)</Label>
+                  <Input
+                    id="resume-url"
+                    value={draft.resume.url}
+                    onChange={(e) => setResume("url", e.target.value)}
+                    placeholder="https://…/resume.pdf"
+                    inputMode="url"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="resume-label">Section title</Label>
+                  <Input
+                    id="resume-label"
+                    value={draft.resume.label}
+                    onChange={(e) => setResume("label", e.target.value)}
+                    placeholder="Resume"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                {draft.resume.url.trim() ? (
+                  <>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => window.open(draft.resume.url.trim(), "_blank", "noopener,noreferrer")}
+                    >
+                      Test link
+                    </Button>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => setResume("url", "")}>
+                      Remove
+                    </Button>
+                  </>
+                ) : null}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Host your PDF anywhere (Google Drive direct link, Dropbox, Notion, S3…) and
+                paste the https URL. Visitors get an inline preview plus Download and Open
+                in new tab actions. Leave empty to hide the section.
+              </p>
+            </CardContent>
+          </Card>
+
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold">Portfolio items ({draft.items.length})</h2>
             <Button variant="outline" size="sm" onClick={addItem}>
               <Plus className="h-4 w-4" /> Add item
             </Button>
           </div>
+          <p className="text-xs text-muted-foreground">
+            Order here = order on the page. Item #1 appears first in the first row.
+          </p>
 
-          {draft.items.map((item) => (
-            <Card key={item.id}>
+          {draft.items.map((item, index) => (
+            <Card
+              key={item.id}
+              onDragOver={(e) => {
+                // Allow dropping to reorder.
+                if (dragIndex.current !== null && dragIndex.current !== index) {
+                  e.preventDefault();
+                }
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                if (dragIndex.current !== null) {
+                  reorderItems(dragIndex.current, index);
+                  dragIndex.current = null;
+                }
+              }}
+            >
               <CardHeader>
-                <CardTitle className="text-sm">Item</CardTitle>
-                <CardAction>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removeItem(item.id)}
-                    aria-label="Delete item"
+                <CardTitle className="flex items-center gap-2 text-sm">
+                  <span
+                    draggable
+                    onDragStart={(e) => {
+                      dragIndex.current = index;
+                      e.dataTransfer.effectAllowed = "move";
+                    }}
+                    onDragEnd={() => {
+                      dragIndex.current = null;
+                    }}
+                    className="cursor-grab touch-none rounded p-1 text-muted-foreground hover:bg-muted active:cursor-grabbing"
+                    title="Drag to reorder"
+                    aria-label={`Drag to reorder ${item.title || `item ${index + 1}`}`}
                   >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                    <GripVertical className="h-4 w-4" />
+                  </span>
+                  <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-muted px-1.5 text-xs font-semibold">
+                    {index + 1}
+                  </span>
+                  <span className="truncate">
+                    {item.title.trim() || `Untitled ${index + 1}`}
+                  </span>
+                  {index === 0 && draft.items.length > 1 ? (
+                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
+                      First
+                    </span>
+                  ) : null}
+                </CardTitle>
+                <CardAction>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => moveItem(index, -1)}
+                      disabled={index === 0}
+                      aria-label="Move item up"
+                      title="Move up (shows earlier)"
+                    >
+                      <ChevronUp className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => moveItem(index, 1)}
+                      disabled={index === draft.items.length - 1}
+                      aria-label="Move item down"
+                      title="Move down (shows later)"
+                    >
+                      <ChevronDown className="h-4 w-4" />
+                    </Button>
+                    {index > 0 ? (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="hidden text-xs sm:inline-flex"
+                        onClick={() => moveToTop(index)}
+                        title="Move to first position"
+                      >
+                        To top
+                      </Button>
+                    ) : null}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeItem(item.id)}
+                      aria-label="Delete item"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </CardAction>
               </CardHeader>
               <CardContent className="space-y-4">
