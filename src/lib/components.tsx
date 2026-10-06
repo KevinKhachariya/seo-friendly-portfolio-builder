@@ -38,7 +38,7 @@ function VideoFacade({ title, src, poster }: { title: string; src: string; poste
   // explicitly start playback instead of relying on the autoplay attribute.
   useEffect(() => {
     if (playing) {
-      videoRef.current?.play()?.catch(() => {});
+      videoRef.current?.play()?.catch(() => { });
     }
   }, [playing]);
 
@@ -123,8 +123,8 @@ export function ProjectCard({ item }: { item: Item }) {
 export const MAX_VISIBLE_TAGS = 8;
 
 export function TagFilter({ items }: { items: Item[] }) {
-  const tags = [...new Set(items.flatMap((item) => item.tags))];
   const [expanded, setExpanded] = useState(false);
+  const tags = [...new Set(items.flatMap((item) => item.tags))];
   if (tags.length === 0) return null;
   const hiddenCount = tags.length - MAX_VISIBLE_TAGS;
   const collapsedLabel = `Show more (+${hiddenCount})`;

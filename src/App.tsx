@@ -28,7 +28,7 @@ type DraftItem = {
   link: string;
 };
 type Draft = {
-  meta: { title: string; description: string; canonicalUrl: string; ogImage: string; lang: string; favicon: string; github: string; x: string; linkedin: string };
+  meta: { title: string; description: string; canonicalUrl: string; ogImage: string; lang: string; favicon: string; github: string; x: string; linkedin: string; resumeUrl: string };
   contact: { email: string; label: string };
   resume: { url: string };
   templateId: "minimal" | "editorial" | "cartoony";
@@ -46,6 +46,7 @@ const sample: Draft = {
     github: "",
     x: "",
     linkedin: "",
+    resumeUrl: "",
   },
   contact: { email: "hello@jane.design", label: "Get in touch" },
   resume: { url: "" },
@@ -78,6 +79,7 @@ function toConfig(d: Draft): { ok: true; config: Config } | { ok: false; error: 
       ...(d.meta.github ? { github: d.meta.github } : {}),
       ...(d.meta.x ? { x: d.meta.x } : {}),
       ...(d.meta.linkedin ? { linkedin: d.meta.linkedin } : {}),
+      ...(d.meta.resumeUrl ? { resumeUrl: d.meta.resumeUrl } : {}),
     },
     contact: { email: d.contact.email, label: d.contact.label || "Contact" },
     ...(d.resume.url.trim() ? { resume: { url: d.resume.url.trim() } } : {}),
@@ -115,6 +117,7 @@ function configToDraft(c: Config): Draft {
       github: c.meta.github ?? "",
       x: c.meta.x ?? "",
       linkedin: c.meta.linkedin ?? "",
+      resumeUrl: c.meta.resumeUrl ?? "",
     },
     contact: { email: c.contact.email, label: c.contact.label },
     resume: c.resume ? { url: c.resume.url } : { url: "" },

@@ -61,6 +61,7 @@ export const configSchema = z.object({
     github: httpsUrl.optional(),
     x: httpsUrl.optional(),
     linkedin: httpsUrl.optional(),
+    resumeUrl: httpsUrl.optional(),
   }),
   contact: z.object({
     email: z.string().email("Invalid email"),

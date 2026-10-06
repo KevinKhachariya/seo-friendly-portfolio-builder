@@ -98,6 +98,27 @@ describe("artifact build", () => {
     expect(html).toContain('data-src="https://cdn.example.com/demo.mp4"');
     expect(html).not.toContain("<video");
   });
+
+  it("collapses extra tag pills behind a View more toggle", () => {
+    const tags = ["a", "b", "c", "d", "e", "f", "g"];
+    const many = {
+      ...config,
+      items: [
+        { ...config.items[0], tags },
+      ],
+    };
+    const html = build(configSchema.parse(many));
+    expect(html).toContain('class="pf-filter-more"');
+    expect(html).toContain(">View more (+2)<");
+    expect(html).toContain("data-collapsed");
+    expect(html).toContain("hidden");
+  });
+
+  it("shows all pills with no toggle when tags fit", () => {
+    const html = build(configSchema.parse(config));
+    expect(html).not.toContain('class="pf-filter-more"');
+    expect(html).not.toContain(">View more");
+  });
 });
 
 describe("config schema", () => {

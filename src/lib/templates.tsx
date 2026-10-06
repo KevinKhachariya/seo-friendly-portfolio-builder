@@ -38,19 +38,31 @@ const minimal: Template = {
     .pf-filter-label { font-size: .8rem; color: #525252; }
     .pf-filter-btn { font: inherit; font-size: .8rem; padding: .3rem .8rem; border: 1px solid #d4d4d4; border-radius: 999px; background: #fff; color: #171717; cursor: pointer; }
     .pf-filter-btn.active { background: #171717; color: #fff; border-color: #171717; }
+    .pf-filter-btn[hidden] { display: none; }
+    .pf-filter-more { font: inherit; font-size: .8rem; font-weight: 600; padding: .3rem .6rem; border: 0; background: transparent; color: #171717; text-decoration: underline; cursor: pointer; }
     .pf-social { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; }
     .pf-social a { color: #171717; text-decoration: none; font-size: 1.05rem; font-weight: 600; }
     .pf-social a:hover { text-decoration: underline; }
     .pf-card { display: flex; flex-direction: column; gap: .6rem; min-width: 0; }
+    .pf-card { display: flex; flex-direction: column; gap: .6rem; min-width: 0; }
     .pf-media { width: 100%; aspect-ratio: 16/9; object-fit: cover; background: #f5f5f5; border-radius: 8px; display: block; }
-    .pf-title { font-size: clamp(0.85rem, 0.82rem + 0.6vw, 0.95rem); font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; word-break: break-word; hyphens: auto; min-width: 0; }
-    .pf-desc { font-size: .9rem; color: #525252; overflow-wrap: anywhere; word-break: break-word; min-width: 0; }
+    .pf-title { font-size: clamp(.95rem, .85rem + .8vw, 1.05rem); font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; word-break: break-word; hyphens: auto; }
+    .pf-desc { font-size: clamp(.82rem, .78rem + .4vw, .9rem); color: #525252; overflow-wrap: anywhere; word-break: break-word; }
     .pf-tags { list-style: none; display: flex; flex-wrap: wrap; gap: .4rem; padding: 0; }
     .pf-tags li { font-size: .72rem; padding: .2rem .65rem; border: 1px solid #e5e5e5; border-radius: 999px; color: #404040; }
     .pf-link { margin-top: auto; padding-top: .5rem; font-size: .85rem; font-weight: 600; color: #171717; }
     .pf-contact { display: inline-block; margin-top: 3rem; padding: .65rem 1.5rem; background: #171717; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 500; }
     @media (max-width: 640px) { main { padding: 2rem 1rem; } }
     footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid #e5e5e5; color: #a3a3a3; font-size: .85rem; }
+    @media (max-width: 640px) {
+      main { padding: 2rem 1rem; }
+      header { margin-bottom: 2rem; }
+      .pf-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+      .pf-social a { font-size: .95rem; }
+    }
+    @media (min-width: 641px) and (max-width: 1024px) {
+      .pf-grid { gap: 1.5rem; }
+    }
   `,
   render({ meta, items, contact, resume }) {
     return (
@@ -93,19 +105,31 @@ const editorial: Template = {
     .pf-filter-label { font-size: .85rem; font-style: italic; color: #57534e; }
     .pf-filter-btn { font: inherit; font-size: .85rem; font-style: italic; padding: .25rem .9rem; border: 1px solid #d6d3d1; background: transparent; color: #1c1917; cursor: pointer; }
     .pf-filter-btn.active { background: #1c1917; color: #faf7f2; border-color: #1c1917; }
+    .pf-filter-btn[hidden] { display: none; }
+    .pf-filter-more { font: inherit; font-size: .85rem; font-style: italic; padding: .25rem .5rem; border: 0; background: transparent; color: #1c1917; text-decoration: underline; cursor: pointer; }
     .pf-social { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem; }
     .pf-social a { color: #1c1917; text-decoration: none; font-style: italic; font-size: 1.15rem; }
     .pf-social a:hover { text-decoration: underline; }
     .pf-card { display: flex; flex-direction: column; gap: .75rem; min-width: 0; }
+    .pf-card { display: flex; flex-direction: column; gap: .75rem; min-width: 0; }
     .pf-media { width: 100%; aspect-ratio: 4/3; object-fit: cover; background: #e7e5e4; display: block; }
-    .pf-title { font-size: clamp(0.95rem, 0.88rem + 0.8vw, 1.15rem); font-weight: 500; line-height: 1.35; overflow-wrap: anywhere; word-break: break-word; hyphens: auto; min-width: 0; }
-    .pf-desc { font-size: .98rem; color: #44403c; overflow-wrap: anywhere; word-break: break-word; min-width: 0; }
+    .pf-title { font-size: clamp(1.05rem, .9rem + 1vw, 1.35rem); font-weight: 500; line-height: 1.3; overflow-wrap: anywhere; word-break: break-word; hyphens: auto; }
+    .pf-desc { font-size: clamp(.88rem, .82rem + .4vw, .98rem); color: #44403c; overflow-wrap: anywhere; word-break: break-word; }
     .pf-tags { list-style: none; display: flex; flex-wrap: wrap; gap: .5rem; padding: 0; }
     .pf-tags li { font-size: .75rem; font-style: italic; color: #78716c; }
     .pf-link { margin-top: auto; padding-top: .75rem; font-size: .9rem; font-style: italic; color: #1c1917; }
     .pf-contact { display: inline-block; margin-top: 3rem; padding: .8rem 2rem; border: 1px solid #1c1917; color: #1c1917; text-decoration: none; font-style: italic; }
     @media (max-width: 640px) { main { padding: 2.5rem 1rem; } }
     footer { margin-top: 5rem; text-align: center; color: #a8a29e; font-size: .85rem; }
+    @media (max-width: 640px) {
+      main { padding: 2.5rem 1rem; }
+      header { margin-bottom: 2.5rem; }
+      .pf-grid { grid-template-columns: 1fr; gap: 2rem 1rem; }
+      .pf-social a { font-size: 1rem; }
+    }
+    @media (min-width: 641px) and (max-width: 1024px) {
+      .pf-grid { gap: 2rem 1.5rem; }
+    }
   `,
   render({ meta, items, contact, resume }) {
     return (
@@ -151,17 +175,30 @@ const cartoony: Template = {
     .pf-hero { margin-bottom: 2.5rem; }
     h1 {
       font-family: "Arial Black", "Franklin Gothic Bold", Impact, sans-serif;
-      font-size: clamp(1.75rem, 1.2rem + 3vw, 3rem);
+      font-size: clamp(1.6rem, 1.1rem + 2.8vw, 3rem);
       text-transform: uppercase;
       letter-spacing: .02em;
+      line-height: 1.1;
       text-shadow: 3px 3px 0 #fff;
       transform: rotate(-1.5deg);
       margin: 0 0 .5rem;
-      overflow-wrap: anywhere;
+      overflow-wrap: break-word;
       word-break: break-word;
-      max-width: 100%;
     }
-    .pf-hero p { font-weight: bold; font-size: clamp(0.95rem, 0.9rem + 0.5vw, 1.05rem); max-width: 60ch; overflow-wrap: anywhere; word-break: break-word; }
+    header p { font-weight: bold; font-size: clamp(.92rem, .85rem + .5vw, 1.05rem); max-width: 60ch; overflow-wrap: break-word; }
+    .pf-topbar { display: flex; justify-content: flex-end; margin-bottom: 1.5rem; }
+    .pf-resume-btn {
+      font-family: "Arial Black", Impact, sans-serif;
+      font-size: .85rem;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: #fff;
+      background: #e63900;
+      border: 3px solid #151515;
+      padding: .4rem 1rem;
+      box-shadow: 4px 4px 0 #151515;
+    }
+    .pf-resume-btn:hover { background: #151515; color: #f7f3e8; }
     .pf-social { display: flex; flex-wrap: wrap; gap: .75rem; margin-bottom: 1.5rem; }
     .pf-social a {
       font-family: "Arial Black", Impact, sans-serif;
@@ -190,7 +227,9 @@ const cartoony: Template = {
       box-shadow: 2px 2px 0 #151515;
     }
     .pf-filter-btn.active { background: #151515; color: #ffffff; }
-    .pf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 2rem; }
+    .pf-filter-btn[hidden] { display: none; }
+    .pf-filter-more { font: inherit; font-weight: bold; text-transform: uppercase; font-size: .75rem; padding: .3rem .7rem; border: 2px dashed #151515; background: transparent; color: #151515; cursor: pointer; }
+    .pf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; }
     .pf-card {
       display: flex;
       flex-direction: column;
@@ -200,11 +239,12 @@ const cartoony: Template = {
       padding: 1rem;
       box-shadow: 6px 6px 0 #151515;
       min-width: 0;
+      min-width: 0;
     }
     .pf-card:hover { transform: rotate(-.5deg); }
     .pf-media { width: 100%; aspect-ratio: 16/9; object-fit: cover; background: #e2e2e2; border: 3px solid #151515; display: block; }
-    .pf-title { font-family: "Arial Black", Impact, sans-serif; font-size: clamp(0.85rem, 0.82rem + 0.6vw, 1rem); line-height: 1.35; text-transform: uppercase; overflow-wrap: anywhere; word-break: break-word; hyphens: auto; min-width: 0; }
-    .pf-desc { font-size: .9rem; overflow-wrap: anywhere; word-break: break-word; min-width: 0; }
+    .pf-title { font-family: "Arial Black", Impact, sans-serif; font-size: clamp(.95rem, .85rem + .8vw, 1.15rem); text-transform: uppercase; line-height: 1.25; overflow-wrap: anywhere; word-break: break-word; hyphens: auto; }
+    .pf-desc { font-size: clamp(.82rem, .78rem + .4vw, .9rem); overflow-wrap: anywhere; word-break: break-word; }
     .pf-tags { list-style: none; display: flex; flex-wrap: wrap; gap: .4rem; padding: 0; }
     .pf-tags li { font-size: .72rem; font-weight: bold; text-transform: uppercase; padding: .15rem .55rem; background: #e63900; color: #fff; border: 2px solid #151515; }
     .pf-link { margin-top: auto; padding-top: .5rem; font-family: "Arial Black", Impact, sans-serif; font-size: .8rem; text-transform: uppercase; color: #e63900; text-decoration: underline; }
@@ -224,6 +264,16 @@ const cartoony: Template = {
     .pf-contact:hover { background: #151515; color: #f7f3e8; }
     @media (max-width: 640px) { main { padding: 2rem 1rem; } h1 { transform: none; } }
     footer { margin-top: 3.5rem; font-weight: bold; text-transform: uppercase; font-size: .8rem; }
+    @media (max-width: 640px) {
+      main { padding: 2rem 1rem; }
+      h1 { transform: none; text-shadow: 2px 2px 0 #fff; }
+      .pf-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+      .pf-card { padding: .85rem; }
+      .pf-social a { font-size: .8rem; }
+    }
+    @media (min-width: 641px) and (max-width: 1024px) {
+      .pf-grid { gap: 1.5rem; }
+    }
   `,
   render({ meta, items, contact, resume }) {
     return (
